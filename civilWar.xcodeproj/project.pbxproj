@@ -25,6 +25,8 @@
 /* Begin PBXFileReference section */
 		1E46A0EB1C00730100312C5C /* civilWar */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = civilWar; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E46A0EE1C00730200312C5C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		1E46A0F51C0073F600312C5C /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		1E46A0F61C00747100312C5C /* civilization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = civilization.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,8 @@
 			isa = PBXGroup;
 			children = (
 				1E46A0EE1C00730200312C5C /* main.cpp */,
+				1E46A0F51C0073F600312C5C /* constants.h */,
+				1E46A0F61C00747100312C5C /* civilization.h */,
 			);
 			path = civilWar;
 			sourceTree = "<group>";
@@ -237,6 +241,7 @@
 				1E46A0F41C00730200312C5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
