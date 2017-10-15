@@ -10,22 +10,22 @@
 #define civilization_h
 
 //death reason
-enum class deadReasons {unknown, die_of_hunger, being_killed};
+enum class deadReasons {unknown=0, die_of_hunger, being_killed};
 
 class civilization {
 public:
     //basic info
-    int name;
-    int mass;
-    int civilDg;
-    int x, y;
-    int scanR;
+    unsigned        name;
+    unsigned        mass;
+    unsigned        civilDg;
+    unsigned        scanR;
+    int             x, y;
     //advanced info
-    bool hideMode;
-    bool cleanGen;
+    bool            hideMode;
+    bool            cleanGen;
     //extra info for analyse
-    deadReasons deadReason;
-    int whoKill;
+    deadReasons     deadReason;
+    decltype(name)  whoKill;
     //universal variables
     static unsigned unusedMass;
     static unsigned uniTime;

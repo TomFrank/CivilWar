@@ -100,21 +100,21 @@ inline void constants::checkValidity() {
 }
 
 //universal constants
-int constants::groosMass = 1e8;
-int constants::civilNum = 1e2;
-int constants::uniBorder = 1e8;
-int constants::scanRPerCivilDg = 1e3;
-int constants::massPerCivilDg = 1e1;
-int constants::hideCD = 1e3;
-int constants::cleanCD = 1e5;
+int constants::groosMass          = 1e8;
+int constants::civilNum           = 1e2;
+int constants::uniBorder          = 1e8;
+int constants::scanRPerCivilDg    = 1e3;
+int constants::massPerCivilDg     = 1e1;
+int constants::hideCD             = 1e3;
+int constants::cleanCD            = 1e5;
 
 unsigned civilization::unusedMass = 0;
-unsigned civilization::uniTime = 0;
-unsigned civilization::circle = 0;
-unsigned civilization::runTimes = 0;
+unsigned civilization::uniTime    = 0;
+unsigned civilization::circle     = 0;
+unsigned civilization::runTimes   = 0;
 
-normal_distribution<> normalCivilDgChgTime(1.5, 0.2);
-normal_distribution<> hideCivilDgChgTime(1.2, 0.1);
+normal_distribution<>      normalCivilDgChgTime(1.5, 0.2);
+normal_distribution<>      hideCivilDgChgTime(1.2, 0.1);
 uniform_int_distribution<> coords(0, constants::uniBorder);
 uniform_int_distribution<> initialMass((constants::groosMass / constants::civilNum) / 4, constants::groosMass / constants::civilNum);
 
@@ -125,15 +125,15 @@ void writeData(bool, ofstream &detialedFile = data, ofstream &logFile = data2);
 void writeTitle(ofstream&);
 
 civilization::civilization(decltype(name) n): name(n) {
-    civilDg = 2;
-    scanR = 2;
+    civilDg    = 2;
+    scanR      = 2;
     deadReason = deadReasons::unknown;
-    whoKill = constants::civilNum;
-    mass = initialMass(randEng);
-    x = coords(randEng);
-    y = coords(randEng);
-    hideMode = false;
-    cleanGen = false;
+    whoKill    = constants::civilNum;
+    mass       = initialMass(randEng);
+    x          = coords(randEng);
+    y          = coords(randEng);
+    hideMode   = false;
+    cleanGen   = false;
 }
 
 inline bool civilization::isAlive() const {
@@ -142,28 +142,28 @@ inline bool civilization::isAlive() const {
 }
 
 inline void civilization::setDie(deadReasons dR) {
-    civilDg = 0;
+    civilDg     = 0;
     unusedMass += mass;
-    mass = 0;
-    deadReason = dR;
+    mass        = 0;
+    deadReason  = dR;
 }
 
 inline void civilization::setHide(bool b) {
-    hideMode = b;
+    hideMode    = b;
 }
 
 inline void civilization::setClean(bool b) {
-    cleanGen = b;
+    cleanGen    = b;
 }
 
 inline void civilization::massTrans(decltype(mass) m) {
-    mass -= m;
+    mass       -= m;
     unusedMass += m;
 }
 
 inline bool civilization::massCollect(decltype(mass) m) {
     if (m > unusedMass) {
-        mass += m;
+        mass       += m;
         unusedMass -= m;
         return true;
     } else return false;
@@ -171,13 +171,14 @@ inline bool civilization::massCollect(decltype(mass) m) {
 }
 
 vector<civilization> uniScty;
-vector<vector<int>> civilDis;
+vector<vector<int>>  civilDis;
 
 void init() {
     
-    endThread = false;
-    civilization::uniTime = 0;
+    endThread                = false;
+    civilization::uniTime    = 0;
     civilization::unusedMass = 0;
+    
     constants::updateConstants();
     constants::checkValidity();
     
@@ -290,21 +291,20 @@ void civilExp() {
             
             //begin to clean!
             for (auto &d : uniScty) {
-                if (
-                    c.isAlive() && d.isAlive()
-                    && !c.hideMode && !d.hideMode
-                    && c.cleanGen
-                    && c.civilDg > d.civilDg
-                    && c.scanR > civilDis[c.name][d.name]
-                    && c.scanR > civilDis[d.name][c.name]
-                    && c.civilDg > (1 / (c.civilDg - d.civilDg)) * 100
-                    && c.mass > (1 / (c.civilDg - d.civilDg) / constants::massPerCivilDg) * 100
+                if (    c.isAlive() && d.isAlive()
+                    && !c.hideMode  && !d.hideMode
+                    &&  c.cleanGen
+                    &&  c.civilDg > d.civilDg
+                    &&  c.scanR   > civilDis[c.name][d.name]
+                    &&  c.scanR   > civilDis[d.name][c.name]
+                    &&  c.civilDg > (1 / (c.civilDg - d.civilDg)) * 100
+                    &&  c.mass    > (1 / (c.civilDg - d.civilDg) / constants::massPerCivilDg) * 100
                     ) {
                     //I would like to use 1% resourse to clean
                     //-------------------------------need more ...-----------------------------
                     //begin to KILL the other!
                     d.setDie(deadReasons::being_killed);
-                    d.whoKill = c.name;
+                    d.whoKill  = c.name;
                     //get injured as well
                     c.civilDg -= 1 / (c.civilDg - d.civilDg);
                     //-------------------------------need to adjust--------------------------------
@@ -320,11 +320,11 @@ void civilExp() {
 void analyse(double hungerRate,double killRate){
     if (hungerRate>=50) {
         fout << "Too many civilizations are died of hunger!\n";
-        constants::massPerCivilDg *= 0.9;
+        constants::massPerCivilDg  *= 0.9;
         constants::scanRPerCivilDg *= 1.1;
     }else{
         fout << "Too many civilizations are killed!\n";
-        constants::hideCD *= 0.9;
+        constants::hideCD  *= 0.9;
         constants::cleanCD *= 1.1;
     }
     fout << "\n";
@@ -346,11 +346,11 @@ void monitor() {
         
         auto calcRate = [&](decltype(countc) a) {return static_cast<double>(a) / constants::civilNum * 100;};
         
-        cleanRate = calcRate(countc);
-        hideRate = calcRate(counthd);
+        cleanRate  = calcRate(countc);
+        hideRate   = calcRate(counthd);
         hungerRate = calcRate(counth);
-        killRate = calcRate(countk);
-        deathRate = hungerRate + killRate;
+        killRate   = calcRate(countk);
+        deathRate  = hungerRate + killRate;
         
         //cout << "death rate:" << deathRate << "\n";
         //mtx.lock();
@@ -464,24 +464,24 @@ void writeData(bool ifLog, ofstream &detialedFile, ofstream &logFile) {
         constants::printConstants(logFile);
         logFile << "\n";
     }
-    // detialedFile
-    //         << uniTime
-    //         << "," << unusedMass
-    //         << "\n";
-    // mtx.lock();
-    // for (const auto &c : uniScty) {
-    // 	detialedFile
-    // 	        << uniTime << ","
-    // 	        << c.name << ","
-    // 	        << c.civilDg << ","
-    // 	        << c.hideMode << ","
-    // 	        << c.cleanGen << ","
-    // 	        << c.deadReason << ","
-    // 	        << c.whoKill << ","
-    // 	        << c.mass
-    // 	        << "\n";
-    // }
-    // mtx.unlock();
+//     detialedFile
+//             << uniTime
+//             << "," << unusedMass
+//             << "\n";
+//     mtx.lock();
+//     for (const auto &c : uniScty) {
+//     	detialedFile
+//     	        << uniTime << ","
+//     	        << c.name << ","
+//     	        << c.civilDg << ","
+//     	        << c.hideMode << ","
+//     	        << c.cleanGen << ","
+//     	        << c.deadReason << ","
+//     	        << c.whoKill << ","
+//     	        << c.mass
+//     	        << "\n";
+//     }
+//     mtx.unlock();
 }
 
 int main(int argc, char* argv[]) {
